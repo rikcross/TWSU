@@ -6,5 +6,5 @@ A paint program for the TWSU DIY Gamer Kit
 
 The flashing square is the cursor.
 
-Arrow keys - move the cursor
-Start - place/delete pixel
++ Arrow keys - move the cursor
++ Start - place/delete pixel
