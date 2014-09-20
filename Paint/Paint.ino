@@ -23,7 +23,7 @@ void setup()
 
 void loop() 
 {
-  clearGameScreen();
+  gamer.clear();
   vis = vis==0 ? 1 : 0;
   gamer.display[yPos][xPos] = vis;
   printGameScreen();
@@ -37,15 +37,6 @@ void printGameScreen() {
     for(int row=0; row<8; row++) {
       gamer.display[row][col] = (row==yPos and col==xPos) ? vis : gameScreen[scrPos];
       scrPos++;
-    }
-  }
-  gamer.updateDisplay();
-}
-
-void clearGameScreen() {
-  for(int i=0; i<8; i++) {
-    for(int j=0; j<8; j++) {
-      gamer.display[j][i] = 0;
     }
   }
   gamer.updateDisplay();
