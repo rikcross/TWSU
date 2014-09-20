@@ -1,6 +1,8 @@
 # Reaction
 
-Stack up a tower of blocks to complete the level. You lost if any blocks aren't in line!
+Stack up a tower of blocks to complete the level. You lose if any blocks aren't in line!
+
+The game speeds up slightly after each completed level.
 
 ## Instructions
 
