@@ -14,7 +14,9 @@ int currentBlockPos = 0;
 int currentRow = 1;
 int stoppedPos[8] = {0,0,0,0,0,0,0,0};
 int dir = -1;
-int delayTime = 1000;
+int startingDelayAmount = 800;
+int delayTime = startingDelayAmount;
+int frameCounter = 1;
 
 byte titleAnim[30][8] = {
 		{B00000000,
@@ -331,26 +333,25 @@ void loop()
   //block position (add 8 for each vertical level
   gameScreen[(8*(8-currentRow)) +currentBlockPos] = 1;
   printGameScreen();
-  
   //down = place block
   if(gamer.isPressed(DOWN)) {
     gameScreen[(8*(8-currentRow)) +currentBlockPos] = 1;
     stoppedPos[currentRow-1] = currentBlockPos;
     currentRow += 1;
+    //stops cheating by repeatedly pressing down
+    frameCounter = startingDelayAmount;
     //if the block isn't in line with the block below it... game over!
     if(currentRow > 2 and stoppedPos[currentRow-2] != stoppedPos[currentRow-3]) {
       delay(300);
       gamer.printImage(cross);
-      delay(2000);
+      delay(1000);
       //reset to start game
       resetGame();
-      delayTime = 1000;
-      delay(2000);
+      delayTime = startingDelayAmount;
+      delay(1000);
     }
   }
-  
-  //game gets faster each level
-  delay(delayTime/currentRow);
+  if(frameCounter==0) {
   //change direction at the ends of the screen
   if (currentBlockPos == 7) {
     dir = dir * -1;
@@ -367,18 +368,24 @@ void loop()
   {
     delay(300);
     gamer.printImage(tick);
-    delay(2000);
+    delay(1000);
     //reset for next level
     resetGame();
     if(delayTime > 199) {
       delayTime = delayTime - 200;
     }
     else {
-      delayTime = 1000;
+      delayTime = startingDelayAmount;
     }
-    delay(2000);  
+    delay(1000);  
+  } }
+  delay(1);
+  //only moves blocks on frame '0'
+  //this is instead of a delay, which causes a lag in input
+  frameCounter += 1;
+  if (frameCounter >= delayTime/currentRow) {
+    frameCounter = 0;
   }
-  
 }
 
 
@@ -392,6 +399,7 @@ void resetGame() {
     stoppedPos[l] = 0;
   }
   dir = -1;
+  frameCounter = 1;
 }
 
 void showTitle() {
