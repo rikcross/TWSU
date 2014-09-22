@@ -5,7 +5,7 @@
 + Left/right arrow - moves
 + ...that's it so far!
 
-# To Do
+## To Do
 
 + Implement jumping;
 + Add level end point (objective);
