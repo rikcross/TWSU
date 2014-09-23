@@ -2,12 +2,15 @@
 
 Gamer gamer;
 int charXPos = 3;
-int charYPos = 0;
+int charYPos = 5;
 //position of the level may on the display
 int offset = 0;
 
 //length of level
 int levelSize = 15;
+
+boolean jumping = false;
+int jumpHeight = 0;
 
 int level[8][15] = {
   {0,1,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -30,12 +33,24 @@ void setup() {
   gamer.begin();
 }
 void loop() {
+  
   drawScreen();
   getInput();
-
+  
+  //jumping
+  if(jumping == true) {
+    charYPos -= 1;
+    jumpHeight += 1;
+    if(jumpHeight >= 2) {
+      jumping = false;
+    }
+  }
   //gravity
-  if(level[charYPos+1][charXPos]==0) {
-    charYPos += 1;
+  else {
+    if(level[charYPos+1][charXPos]==0) {
+      charYPos += 1;
+      jumpHeight -= 1;
+    }
   }
   
   delay(100);
@@ -57,7 +72,11 @@ void getInput() {
     if(level[charYPos][charXPos+offset-1] == 0) {
       offset -= 1;
     }
-  }   
+  }
+
+  if( gamer.isPressed(UP) ) {
+    jumping = true;
+  }  
   
 }
 
