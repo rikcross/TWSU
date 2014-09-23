@@ -2,11 +2,11 @@
 
 ## Instructions
 
+Move around the level and get to the exit door to win!
+
 + Left/right arrow - moves
-+ ...that's it so far!
++ Up - jump
 
 ## To Do
 
-+ Implement jumping;
-+ Add level end point (objective);
 + Multiple levels?

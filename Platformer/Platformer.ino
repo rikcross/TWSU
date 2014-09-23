@@ -2,28 +2,39 @@
 
 Gamer gamer;
 int charXPos = 3;
-int charYPos = 5;
+int charYPos = 6;
 //position of the level may on the display
 int offset = 0;
 
 //length of level
-int levelSize = 15;
+int levelSize = 40;
 
 boolean jumping = false;
 int jumpHeight = 0;
 
-int level[8][15] = {
-  {0,1,0,0,0,0,0,0,0,0,0,0,0,1},
-  {0,1,0,0,0,0,0,0,0,0,0,0,0,1},
-  {0,1,0,0,0,0,0,0,0,0,0,0,0,1},
-  {0,1,0,0,0,0,0,0,0,0,0,0,0,1},
-  {0,1,0,0,0,0,0,0,0,0,0,0,0,1},
-  {0,1,0,0,0,0,0,0,0,0,0,0,0,1},
-  {0,1,1,1,1,1,1,1,1,1,1,1,1,1},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+// 0=nothing 1=platform 2=exit
+int level[8][40] = {
+  {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,1},
+  {0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,1,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1},
+  {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {0,1,0,0,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1},
+  {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 };
 
+//face image
+byte face[8] = {B00000000,
+                B00100100,
+                B00100100,
+                B00000000,
+                B10000001,
+                B01000010,
+                B00111100,
+                B00000000};
 
+                
 /*
 * ------------------------
 * the main game!
@@ -39,18 +50,40 @@ void loop() {
   
   //jumping
   if(jumping == true) {
-    charYPos -= 1;
-    jumpHeight += 1;
-    if(jumpHeight >= 2) {
+    //if there's no platform above the player
+    if(level[charYPos-1][charXPos+offset]==0) {
+      charYPos -= 1;
+      jumpHeight += 1;
+      //only jump 3 squares high
+      if(jumpHeight >= 3) {
+        jumping = false;
+      }
+    }
+    //if there is a platform above
+    else {
       jumping = false;
+      jumpHeight = 0;
     }
   }
   //gravity
   else {
-    if(level[charYPos+1][charXPos]==0) {
+    //if there isn't a block below the player
+    if(level[charYPos+1][charXPos+offset]!=1) {
       charYPos += 1;
       jumpHeight -= 1;
     }
+    else {
+      jumpHeight = 0;
+    }
+  }
+  
+  //has the player got to the end?
+  if(level[charYPos][charXPos+offset]==2) {
+    gamer.clear();
+    gamer.printImage(face);
+    delay(2000);
+    gamer.clear();
+    resetLevel();
   }
   
   delay(100);
@@ -64,12 +97,12 @@ void loop() {
 */
 void getInput() {
   if( gamer.isHeld(RIGHT) ) {
-    if(level[charYPos][charXPos+offset+1] == 0) {
+    if(level[charYPos][charXPos+offset+1] != 1) {
       offset += 1;
     }
   }
   else if( gamer.isHeld(LEFT) ) {
-    if(level[charYPos][charXPos+offset-1] == 0) {
+    if(level[charYPos][charXPos+offset-1] != 1) {
       offset -= 1;
     }
   }
@@ -91,16 +124,22 @@ void drawScreen() {
         gamer.display[j][i] = 0;
       }
       else {
-        gamer.display[j][i] = level[i][j+offset];
+        gamer.display[j][i] = min(level[i][j+offset],1);
       }
     }
   }
   
-  //place character
+  //place player
   gamer.display[charXPos][charYPos] = 1;
   
   gamer.updateDisplay();
 }
 
-
+void resetLevel() {
+  charXPos = 3;
+  charYPos = 6;
+  offset = 0;
+  jumping = false;
+  jumpHeight = 0;
+}
 
