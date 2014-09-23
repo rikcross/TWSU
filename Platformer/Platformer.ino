@@ -79,6 +79,7 @@ void loop() {
   
   //has the player got to the end?
   if(level[charYPos][charXPos+offset]==2) {
+    delay(300);
     gamer.clear();
     gamer.printImage(face);
     delay(2000);
